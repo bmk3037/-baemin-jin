@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>배민진컴퍼니 CI 가이드</title>
+<meta name="description" content="배민진컴퍼니 CI 가이드 v0.1 — 회사의 생각, 로고, 컬러, 글꼴, 말투">
+<link rel="icon" href="brand/logo/symbol.svg" type="image/svg+xml">
+<!--FONTS-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<!--/FONTS-->
+<style>
+/* 레이아웃: 네이비 히어로 한 장에 대담함을 몰고, 나머지는 아이보리 위 왼쪽 정렬 한 단. 명함처럼 단단하게. */
+:root {
+  /* 브랜드 고정색 (테마와 상관없이 같은 값) */
+  --navy: #142454;
+  --orange: #FF5B14;
+  --ivory: #F6F2E9;
+  --ink-fixed: #0D1530;
+  --white: #FFFFFF;
+  /* 테마 토큰 (라이트) */
+  --bg: #F6F2E9;
+  --surface: #FFFFFF;
+  --fg: #0D1530;
+  --strong: #142454;
+  --muted: #646B80;
+  --line: #E2DCCE;
+  --accent-text: #142454;
+  --font: "Pretendard", "Pretendard Variable", -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(1.9rem, 1.4rem + 2vw, 2.6rem);
+  --step-4: clamp(2.4rem, 1.4rem + 4.4vw, 4.4rem);
+  --max: 1080px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1330; --surface: #131D44; --fg: #EDE8DD; --strong: #F6F2E9;
+    --muted: #A3AAC0; --line: #25315E; --accent-text: #FF7A3D; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1330; --surface: #131D44; --fg: #EDE8DD; --strong: #F6F2E9;
+  --muted: #A3AAC0; --line: #25315E; --accent-text: #FF7A3D; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 var(--step-0)/1.7 var(--font);
+  word-break: keep-all;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+h1, h2, h3 { margin: 0; font-weight: 900; line-height: 1.2; text-wrap: balance; color: var(--strong); letter-spacing: -0.02em; }
+p { margin: 0; }
+.wrap { max-width: var(--max); margin: 0 auto; padding-inline: 20px; }
+
+/* 상단 바 */
+.top { border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+.top nav { display: flex; gap: 18px; flex-wrap: wrap; font-weight: 700; font-size: 0.92rem; }
+.top nav a { text-decoration: none; color: var(--muted); }
+.top nav a:hover { color: var(--strong); }
+.logo-dark { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-light { display: none; } :root:not([data-theme="light"]) .logo-dark { display: block; } }
+:root[data-theme="dark"] .logo-light { display: none; }
+:root[data-theme="dark"] .logo-dark { display: block; }
+
+/* 히어로: 유일하게 대담한 곳 */
+.hero { background: var(--navy); color: var(--ivory); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: center; padding-block: 64px 56px; }
+.hero .eyebrow { color: var(--orange); }
+.hero h1 { color: var(--ivory); font-size: var(--step-4); line-height: 1.12; }
+.hero h1 em { font-style: normal; color: var(--orange); }
+.hero .en { margin-top: 14px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.85rem; color: #A9B2D0; }
+.hero .lead { margin-top: 26px; max-width: 34em; color: #D6D9E6; }
+.hero-mark { justify-self: end; width: min(300px, 100%); aspect-ratio: 1; max-width: 100%; }
+.hero-mark .sq { fill: var(--orange); }
+.hero-mark .b { fill: var(--navy); }
+@media (max-width: 720px) {
+  .hero .wrap { grid-template-columns: 1fr; padding-block: 40px; }
+  .hero-mark { justify-self: start; width: 120px; grid-row: 1; }
+}
+
+/* 섹션 공통 */
+section.block { padding-block: 64px; border-bottom: 1px solid var(--line); }
+section.block > .wrap { display: grid; gap: 28px; }
+.eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.head { display: grid; gap: 10px; max-width: 40em; }
+.head h2 { font-size: var(--step-3); }
+.head p { color: var(--muted); }
+
+/* 회사의 생각 */
+.kv { display: grid; border-top: 2px solid var(--strong); }
+.kv div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.kv dt { font-weight: 700; color: var(--muted); font-size: 0.92rem; }
+.kv dd { margin: 0; color: var(--fg); }
+.kv dd b { color: var(--strong); }
+@media (max-width: 560px) { .kv div { grid-template-columns: 1fr; gap: 2px; } }
+
+/* 키워드 */
+.kw { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--strong); }
+.kw > div { padding: 20px 20px 22px 0; display: grid; gap: 6px; align-content: start; }
+.kw > div + div { padding-left: 20px; border-left: 1px solid var(--line); }
+.kw b { font-size: var(--step-2); font-weight: 900; color: var(--strong); line-height: 1.2; }
+.kw i { font-style: normal; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 860px) {
+  .kw { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kw > div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .kw > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+@media (max-width: 480px) {
+  .kw { grid-template-columns: 1fr; }
+  .kw > div, .kw > div + div { padding-left: 0; border-left: 0; }
+  .kw > div + div { border-top: 1px solid var(--line); }
+}
+
+/* 심볼 이야기 */
+.anatomy { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.anatomy-fig { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 12px; overflow-x: auto; }
+.anatomy-fig svg { display: block; width: 100%; min-width: 420px; height: auto; }
+.anatomy-fig .shape { fill: var(--strong); }
+.anatomy-fig .lead-line { stroke: var(--orange); stroke-width: 2; fill: none; }
+.anatomy-fig .dot { fill: var(--orange); }
+.anatomy-fig .lbl { fill: var(--strong); font: 900 17px var(--font); }
+.anatomy-fig .sub { fill: var(--muted); font: 400 14px var(--font); }
+.parts { display: grid; gap: 0; border-top: 2px solid var(--strong); }
+.parts div { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.parts dt { font-weight: 700; color: var(--strong); }
+.parts dd { margin: 0; color: var(--fg); }
+@media (max-width: 860px) { .anatomy { grid-template-columns: 1fr; } }
+
+/* 로고 변형 */
+.variants { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.panel { border-radius: 16px; padding: 28px; display: grid; gap: 20px; align-content: space-between; min-height: 180px; }
+.panel .lockup { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.panel .lockup img.sym { width: 64px; }
+.panel .lockup img.hz { width: min(300px, 100%); }
+.panel small { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; }
+.p-ivory { background: var(--ivory); color: var(--navy); border: 1px solid #E2DCCE; }
+.p-navy { background: var(--navy); color: var(--ivory); }
+.p-white { background: var(--white); color: var(--ink-fixed); border: 1px solid #E2DCCE; }
+.p-ink { background: var(--ink-fixed); color: var(--white); }
+@media (max-width: 640px) { .variants { grid-template-columns: 1fr; } }
+
+.rules-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 12px; align-content: start; }
+.rule h3 { font-size: var(--step-0); font-weight: 700; }
+.rule p { color: var(--muted); font-size: 0.92rem; }
+.rule .demo { height: 96px; display: grid; place-items: center; background: var(--ivory); border-radius: 10px; position: relative; overflow: hidden; color: var(--navy); }
+.rule .demo img { width: 64px; }
+.rule .demo.bad::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top right, transparent calc(50% - 2px), #D7261E calc(50% - 2px), #D7261E calc(50% + 2px), transparent calc(50% + 2px)); }
+.flip { transform: rotate(180deg); }
+.stretch { transform: scaleX(1.6); }
+.cut { font: 900 2rem var(--font); color: var(--navy); letter-spacing: -0.02em; }
+.clearspace { outline: 2px dashed var(--orange); outline-offset: 16px; }
+.spec { display: flex; gap: 10px; flex-wrap: wrap; }
+.spec span { font-size: 0.85rem; font-weight: 700; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; color: var(--strong); font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) { .rules-grid { grid-template-columns: 1fr; } }
+
+/* 컬러 */
+.ratio { display: flex; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.ratio span { display: block; }
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.sw { display: grid; gap: 8px; align-content: start; }
+.sw i { display: block; aspect-ratio: 4 / 3; max-width: 100%; border-radius: 12px; border: 1px solid var(--line); }
+.sw b { color: var(--strong); line-height: 1.3; }
+.sw code { font: 700 0.85rem ui-monospace, "SFMono-Regular", Menlo, monospace; color: var(--fg); }
+.sw span { font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 760px) { .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pairs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.pair { border-radius: 12px; padding: 16px; display: grid; gap: 4px; font-variant-numeric: tabular-nums; }
+.pair b { font-size: 1.15rem; font-weight: 900; }
+.pair span { font-size: 0.82rem; font-weight: 700; }
+.pr-1 { background: var(--ivory); color: var(--navy); border: 1px solid #E2DCCE; }
+.pr-2 { background: var(--navy); color: var(--orange); }
+.pr-3 { background: var(--orange); color: var(--ink-fixed); }
+.pr-4 { background: var(--ivory); color: var(--orange); border: 1px solid #E2DCCE; }
+.pr-4 span::before { content: "✕ "; }
+@media (max-width: 760px) { .pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* 글꼴 */
+.type { display: grid; border-top: 2px solid var(--strong); }
+.type > div { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 16px; padding-block: 20px; border-bottom: 1px solid var(--line); align-items: baseline; }
+.type dt { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+.type dd { margin: 0; color: var(--strong); min-width: 0; }
+.t-900 { font-weight: 900; font-size: var(--step-3); line-height: 1.2; letter-spacing: -0.02em; }
+.t-700 { font-weight: 700; font-size: var(--step-1); letter-spacing: 0.12em; text-transform: uppercase; }
+.t-400 { font-weight: 400; color: var(--fg); max-width: 36em; }
+@media (max-width: 560px) { .type > div { grid-template-columns: 1fr; gap: 6px; } }
+
+/* 말투 */
+.principles { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; border-top: 2px solid var(--strong); counter-reset: p; }
+.principles li { counter-increment: p; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 8px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.principles li::before { content: counter(p); font-weight: 900; color: var(--orange); font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.principles b { color: var(--strong); }
+.dodont { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.dodont > div { border-radius: 16px; padding: 22px; display: grid; gap: 12px; align-content: start; }
+.dodont h3 { font-size: var(--step-1); }
+.dodont ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.dodont li { padding-left: 1.2em; position: relative; }
+.do { background: var(--surface); border: 2px solid var(--strong); }
+.do li::before { content: "→"; position: absolute; left: 0; color: var(--orange); font-weight: 900; }
+.dont { background: transparent; border: 1px dashed var(--muted); }
+.dont h3 { color: var(--muted); }
+.dont li { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--muted) 60%, transparent); }
+.dont li::before { content: "×"; position: absolute; left: 0; font-weight: 900; }
+.words { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.words p { color: var(--muted); }
+.words b { display: block; color: var(--strong); margin-bottom: 4px; }
+@media (max-width: 640px) { .dodont, .words { grid-template-columns: 1fr; } }
+
+/* 우산 구조 */
+.umbrella { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.unit { background: var(--navy); color: var(--ivory); border-radius: 16px; padding: 22px; display: grid; gap: 14px; }
+.unit .lk { display: flex; align-items: center; gap: 12px; }
+.unit .lk img { width: 44px; }
+.unit .lk span { font-weight: 900; font-size: 1.6rem; letter-spacing: -0.02em; line-height: 1; }
+.unit .lk em { font-style: normal; color: var(--orange); }
+.unit p { font-size: 0.88rem; color: #C4CADF; }
+.unit.main { outline: 3px solid var(--orange); outline-offset: -3px; }
+@media (max-width: 760px) { .umbrella { grid-template-columns: 1fr; } }
+
+/* 주의 */
+.caution { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--orange); border-radius: 0 16px 16px 0; padding: 24px; display: grid; gap: 12px; }
+.caution ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+/* 남은 결정 */
+.todo { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; border-top: 2px solid var(--strong); }
+.todo li { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 10px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.todo li::before { content: ""; width: 18px; height: 18px; margin-top: 5px; border: 2px solid var(--strong); border-radius: 4px; }
+.todo b { color: var(--strong); }
+
+footer { padding-block: 40px 56px; color: var(--muted); font-size: 0.85rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="#top" aria-label="배민진컴퍼니 처음으로">
+      <img class="logo-light" src="brand/logo/logo-horizontal-on-light.svg" alt="배민진컴퍼니" width="176" height="40">
+      <img class="logo-dark" src="brand/logo/logo-horizontal-on-dark.svg" alt="배민진컴퍼니" width="176" height="40">
+    </a>
+    <nav aria-label="가이드 목차">
+      <a href="#idea">생각</a>
+      <a href="#symbol">심볼</a>
+      <a href="#logo">로고</a>
+      <a href="#color">컬러</a>
+      <a href="#voice">말투</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">CI GUIDE v0.1 · 배민진컴퍼니</p>
+        <h1>대담하게 시작하고,<br><em>의리로 끝까지.</em></h1>
+        <p class="en">Bold to start. Loyal to the end.</p>
+        <p class="lead">배민진컴퍼니는 아직 업종을 정하지 않았습니다. 하고 싶은 게 많고, 뭐든 할 수 있으니까요. 그래서 이 CI는 무슨 일을 하는지가 아니라 어떤 회사인지에서 출발합니다.</p>
+      </div>
+      <svg class="hero-mark" viewBox="0 0 100 100" role="img" aria-label="배민진컴퍼니 심볼">
+        <path class="sq" d="M22 0H78A22 22 0 0 1 100 22V78A22 22 0 0 1 78 100H22A22 22 0 0 1 0 78V22A22 22 0 0 1 22 0Z"/>
+        <path class="b" fill-rule="evenodd" d="M24 20H41V41H59V20H76V80H24ZM41 54H59V66H41Z"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="block" id="idea">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Idea</p>
+        <h2>이름을 걸고 하는 회사</h2>
+        <p>회사 이름이 사람 이름입니다. 이름을 건다는 건, 잘못되면 그 이름이 책임진다는 뜻입니다.</p>
+      </div>
+      <dl class="kv">
+        <div><dt>이름의 뜻</dt><dd>창업자 <b>배민진</b>의 이름. "내 이름을 걸고 한다"는 약속입니다.</dd></div>
+        <div><dt>하는 일</dt><dd>아직 정하지 않았습니다. 업종이 아니라 사람과 태도로 정의되는 회사입니다.</dd></div>
+        <div><dt>미션</dt><dd>무엇을 하든, 맡은 일과 함께한 사람은 끝까지 책임진다.</dd></div>
+        <div><dt>슬로건</dt><dd><b>대담하게 시작하고, 의리로 끝까지.</b> / 짧게는 <b>이름 걸고 합니다.</b></dd></div>
+        <div><dt>브랜드 성격</dt><dd><b>믿고 맡길 수 있는 대담한 친구.</b> 먼저 "해보자"고 말하고, 한 번 한 약속은 손해를 봐도 지킵니다.</dd></div>
+      </dl>
+      <div class="kw">
+        <div><b>대담</b><i>Bold</i><p>해본 적 없는 일도 먼저 손을 든다.</p></div>
+        <div><b>신뢰</b><i>Trust</i><p>말한 것은 하고, 못 하는 것은 처음부터 말한다.</p></div>
+        <div><b>의리</b><i>Loyalty</i><p>한 번 함께한 사람은 끝까지 챙긴다. 어려울 때 곁에 있는다.</p></div>
+        <div><b>무엇이든</b><i>Open</i><p>하고 싶은 게 많다. 뭐가 되든 앞의 세 가지는 그대로다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="symbol">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Symbol</p>
+        <h2>그릇 모양의 ㅂ</h2>
+        <p>배민진의 첫 자음 ㅂ을 굵고 각지게 그렸습니다. 획마다 회사의 생각이 하나씩 들어 있습니다.</p>
+      </div>
+      <div class="anatomy">
+        <figure class="anatomy-fig" style="margin:0">
+          <svg viewBox="0 0 600 300" role="img" aria-label="ㅂ 심볼의 각 부분과 뜻">
+            <g transform="translate(104 -46) scale(4)">
+              <path class="shape" fill-rule="evenodd" d="M24 20H41V41H59V20H76V80H24ZM41 54H59V66H41Z"/>
+            </g>
+            <!-- 열린 위 -->
+            <circle class="dot" cx="304" cy="70" r="5"/><path class="lead-line" d="M304 70H440"/>
+            <text class="lbl" x="448" y="68">열린 위</text><text class="sub" x="448" y="88">뭐든 담는 그릇</text>
+            <!-- 가로획 -->
+            <circle class="dot" cx="304" cy="144" r="5"/><path class="lead-line" d="M304 144H440"/>
+            <text class="lbl" x="448" y="142">가운데 가로획</text><text class="sub" x="448" y="162">두 사람을 잇는 의리</text>
+            <!-- 기둥 -->
+            <circle class="dot" cx="234" cy="110" r="5"/><path class="lead-line" d="M234 110H160"/>
+            <text class="lbl" x="152" y="108" text-anchor="end">두 기둥</text><text class="sub" x="152" y="128" text-anchor="end">나란히 서는 두 사람</text>
+            <!-- 바닥 -->
+            <circle class="dot" cx="304" cy="250" r="5"/><path class="lead-line" d="M304 250V284H160"/>
+            <text class="lbl" x="152" y="270" text-anchor="end">단단한 바닥</text><text class="sub" x="152" y="290" text-anchor="end">흔들리지 않는 신뢰</text>
+          </svg>
+        </figure>
+        <dl class="parts">
+          <div><dt>위가 열린 모양</dt><dd>뭐든 담을 수 있는 그릇. 아직 정해지지 않은 무엇이든.</dd></div>
+          <div><dt>두 기둥</dt><dd>나란히 서는 두 사람.</dd></div>
+          <div><dt>가운데 가로획</dt><dd>사람과 사람을 묶는 의리.</dd></div>
+          <div><dt>단단한 바닥</dt><dd>흔들리지 않는 신뢰.</dd></div>
+          <div><dt>굵은 획</dt><dd>군더더기 없는 대담함. 멀리서 보면 성벽이나 방패처럼, 내 사람을 지키는 모양입니다.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="logo">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Logo</p>
+        <h2>배경에 맞춰 네 가지</h2>
+        <p>국문 워드마크는 <b>배민진</b>(네이비)과 <b>컴퍼니</b>(오렌지), 그 아래 영문 BAEMINJIN COMPANY. 원본은 <code>brand/logo/</code>에 있습니다.</p>
+      </div>
+      <div class="variants">
+        <div class="panel p-ivory"><div class="lockup"><img class="sym" src="brand/logo/symbol.svg" alt="심볼 기본"><img class="hz" src="brand/logo/logo-horizontal-on-light.svg" alt="가로형 밝은 배경용"></div><small>기본 · 밝은 배경</small></div>
+        <div class="panel p-navy"><div class="lockup"><img class="sym" src="brand/logo/symbol-on-dark.svg" alt="심볼 어두운 배경용"><img class="hz" src="brand/logo/logo-horizontal-on-dark.svg" alt="가로형 어두운 배경용"></div><small>어두운 배경</small></div>
+        <div class="panel p-white"><div class="lockup"><img class="sym" src="brand/logo/symbol-mono-black.svg" alt="심볼 단색 검정"><img class="hz" src="brand/logo/logo-horizontal-mono-black.svg" alt="가로형 단색 검정"></div><small>단색 · 인쇄, 도장</small></div>
+        <div class="panel p-ink"><div class="lockup"><img class="sym" src="brand/logo/symbol-mono-white.svg" alt="심볼 단색 흰색"><img class="hz" src="brand/logo/logo-horizontal-mono-white.svg" alt="가로형 단색 흰색"></div><small>단색 · 사진 위, 어두운 바탕</small></div>
+      </div>
+      <div class="spec"><span>여백: 심볼 높이의 1/4 이상</span><span>최소 크기: 심볼 24px</span><span>가로형 140px 이상</span></div>
+      <div class="rules-grid">
+        <div class="rule"><div class="demo bad"><img class="flip" src="brand/logo/symbol.svg" alt="뒤집힌 심볼 예시"></div><h3>뒤집지 않기</h3><p>위가 닫히면 그릇이 아닙니다. ㅂ은 항상 위가 열린 방향으로.</p></div>
+        <div class="rule"><div class="demo bad"><img class="stretch" src="brand/logo/symbol.svg" alt="늘어난 심볼 예시"></div><h3>늘리거나 바꾸지 않기</h3><p>비율 바꾸기, 색 바꾸기, 그림자나 그라데이션 넣기 모두 하지 않습니다.</p></div>
+        <div class="rule"><div class="demo bad"><span class="cut">배민</span></div><h3>"배민"만 떼지 않기</h3><p>항상 배민진 세 글자를 붙여 씁니다. 배달의민족과 헷갈리지 않도록.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="color">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Color</p>
+        <h2>네이비로 믿음을, 오렌지로 대담함을</h2>
+        <p>화면 절반은 네이비, 따뜻한 아이보리가 바탕, 오렌지는 꼭 필요한 곳에만.</p>
+      </div>
+      <div class="ratio" aria-label="컬러 비율: 네이비 50, 아이보리 30, 오렌지 15, 그레이 5">
+        <span style="flex:50;background:#142454"></span><span style="flex:30;background:#F6F2E9"></span><span style="flex:15;background:#FF5B14"></span><span style="flex:5;background:#646B80"></span>
+      </div>
+      <div class="swatches">
+        <div class="sw"><i style="background:#142454"></i><b>약속 네이비</b><code>#142454</code><span>신뢰 · 50% · 로고, 제목</span></div>
+        <div class="sw"><i style="background:#F6F2E9"></i><b>아이보리</b><code>#F6F2E9</code><span>바탕 · 30%</span></div>
+        <div class="sw"><i style="background:#FF5B14"></i><b>대담 오렌지</b><code>#FF5B14</code><span>대담함 · 15% · 버튼, 강조</span></div>
+        <div class="sw"><i style="background:#0D1530"></i><b>잉크</b><code>#0D1530</code><span>본문 글자, 단색 로고</span></div>
+        <div class="sw"><i style="background:#646B80"></i><b>그레이</b><code>#646B80</code><span>보조 글자 · 5%</span></div>
+      </div>
+      <div class="pairs">
+        <div class="pair pr-1"><b>13.3 : 1</b><span>네이비 / 아이보리 · 어떤 크기든</span></div>
+        <div class="pair pr-2"><b>4.8 : 1</b><span>오렌지 글자는 네이비 위에서</span></div>
+        <div class="pair pr-3"><b>5.8 : 1</b><span>오렌지 버튼 글자는 잉크로</span></div>
+        <div class="pair pr-4"><b>2.8 : 1</b><span>밝은 배경에 오렌지 글자 금지</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="type">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Typography</p>
+        <h2>글꼴은 Pretendard 한 가족</h2>
+        <p>한글과 영문을 같은 글꼴로 맞춥니다. SIL Open Font License라 상업적으로 무료입니다. 배달의민족 전용 서체(한나체, 주아체, 도현체 등)는 쓰지 않습니다.</p>
+      </div>
+      <dl class="type">
+        <div><dt>Black 900 · 로고, 큰 제목</dt><dd class="t-900">이름 걸고 합니다.</dd></div>
+        <div><dt>Bold 700 · 소제목, 영문</dt><dd class="t-700">Bold to start. Loyal to the end.</dd></div>
+        <div><dt>Regular 400 · 본문</dt><dd class="t-400">무엇을 하든, 맡은 일과 함께한 사람은 끝까지 책임집니다. 본문 줄간격은 1.7, 제목은 1.15~1.25로 좁게 씁니다.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" id="voice">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Tone &amp; Manner</p>
+        <h2>단단하고 따뜻하게. 약속은 구체적으로.</h2>
+      </div>
+      <ol class="principles">
+        <li><span><b>약속은 구체적으로.</b> 날짜와 숫자로 말합니다. "빨리" 대신 "금요일까지".</span></li>
+        <li><span><b>대담하되 허세 없이.</b> "업계 최고"처럼 증명 못 할 말은 쓰지 않습니다.</span></li>
+        <li><span><b>못 하는 건 먼저 말합니다.</b> 숨기지 않는 게 신뢰입니다.</span></li>
+        <li><span><b>사람을 먼저.</b> "고객님"보다 "함께하는 분", "우리", "같이".</span></li>
+        <li><span><b>존댓말 기본.</b> 반말은 슬로건 같은 짧은 카피에서만.</span></li>
+      </ol>
+      <div class="dodont">
+        <div class="do"><h3>이렇게</h3><ul>
+          <li>금요일까지 첫 안을 보내드립니다.</li>
+          <li>한번 해보죠. 끝까지 같이 갑니다.</li>
+          <li>이건 저희가 잘 못 합니다. 잘하는 분을 소개해 드릴게요.</li>
+          <li>문제가 생겼습니다. 원인과 해결 방법을 오늘 안에 알려드립니다.</li>
+          <li>맡은 일은 끝까지 합니다.</li>
+        </ul></div>
+        <div class="dont"><h3>이렇게 말고</h3><ul>
+          <li>빠른 시일 내에 공유드리겠습니다.</li>
+          <li>가능 여부를 내부 검토 후 연락드리겠습니다.</li>
+          <li>모든 분야를 완벽하게 해결해 드립니다.</li>
+          <li>일시적인 오류로 불편을 드려 죄송합니다.</li>
+          <li>업계 최고의 서비스를 약속드립니다.</li>
+        </ul></div>
+      </div>
+      <div class="words">
+        <p><b>자주 쓰는 말</b>끝까지, 같이, 직접, 약속, 해보죠, 맡겨 주세요, 이름 걸고</p>
+        <p><b>피하는 말</b>최고, 혁신적인, 아마, 검토해 보겠습니다, 불가피하게, 최대한 노력</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="umbrella">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Brand Structure</p>
+        <h2>사업이 생기면, 배민진 + 사업 이름</h2>
+        <p>뭘 할지 아직 모르니 무엇이 생겨도 붙일 수 있게 했습니다. 심볼과 "배민진"은 그대로 두고, "컴퍼니" 자리에 사업 이름을 넣습니다. 아래 사업 이름은 예시입니다.</p>
+      </div>
+      <div class="umbrella">
+        <div class="unit main"><div class="lk"><img src="brand/logo/symbol-on-dark.svg" alt=""><span>배민진<em>컴퍼니</em></span></div><p>모회사. 모든 사업의 우산.</p></div>
+        <div class="unit"><div class="lk"><img src="brand/logo/symbol-on-dark.svg" alt=""><span>배민진<em>스튜디오</em></span></div><p>예시: 디자인이나 영상을 하게 되면.</p></div>
+        <div class="unit"><div class="lk"><img src="brand/logo/symbol-on-dark.svg" alt=""><span>배민진<em>키친</em></span></div><p>예시: 음식점이나 식품을 하게 되면.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="caution">
+    <div class="wrap">
+      <div class="caution">
+        <h2 style="font-size:var(--step-2)">"배민"과 헷갈리지 않게</h2>
+        <p>이름에 "배민"이 들어 있어서 배달의민족이 먼저 떠오를 수 있습니다.</p>
+        <ul>
+          <li>배민의 민트색 계열은 쓰지 않습니다.</li>
+          <li>배민 전용 서체(한나체, 주아체, 도현체 등)는 쓰지 않습니다.</li>
+          <li>항상 "배민진" 세 글자를 붙여 씁니다. "배민"만 떼거나 크게 강조하지 않습니다.</li>
+          <li>상표 출원 전에 KIPRIS(특허정보검색서비스)에서 "배민진", "배민"을 먼저 찾아보고, 변리사와 상담하세요.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="todo">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Next</p>
+        <h2>남은 결정</h2>
+      </div>
+      <ul class="todo">
+        <li><span><b>배민진 본인 확인.</b> 친구 이름을 회사 이름으로 쓰는 거니까, 이 가이드를 보여주고 동의받기</span></li>
+        <li><span><b>슬로건 확정.</b> "대담하게 시작하고, 의리로 끝까지." 또는 "이름 걸고 합니다."</span></li>
+        <li><span><b>영문 표기 확정.</b> BAEMINJIN(현재), BAE MINJIN, BMJ 중에서</span></li>
+        <li><span><b>첫 사업 정하기.</b> 정해지면 "배민진 + 사업 이름"으로</span></li>
+        <li><span><b>상표 검색.</b> KIPRIS에서 확인</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>배민진컴퍼니 CI 가이드 v0.1</span><span>글꼴 Pretendard · SIL Open Font License</span></div>
+</footer>
+
+</body>
+</html>
